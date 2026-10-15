@@ -17,11 +17,13 @@ h1{font-size:15px;font-weight:600;color:var(--mu);margin:0 0 6px}
 .hero{font-size:30px;font-weight:700;line-height:1.25;margin:0 0 4px}
 .hero b{color:var(--warn)}
 .sub{color:var(--mu);font-size:14px;margin:0 0 20px}
-form{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+form{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:14px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:18px}
 form .full{grid-column:1/-1}
 label{display:block;font-size:12px;color:var(--mu);margin-bottom:3px}
 input,select{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:9px 10px;min-height:44px}
 form>div{min-width:0}
+input[type=number],select{-webkit-appearance:none;appearance:none;display:block;width:100%;min-width:0;height:46px;margin:0}
+select{padding-right:32px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238d96a1' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;text-align:left}
 input[type=date]::-webkit-date-and-time-value{text-align:left}
 input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
