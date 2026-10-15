@@ -27,6 +27,9 @@ select{padding-right:32px;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;text-align:left}
 input[type=date]::-webkit-date-and-time-value{text-align:left}
 input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.sg{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.sg:empty{display:none}
+.sg button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:999px;padding:5px 12px;min-height:34px}
 .add{grid-column:1/-1;background:var(--ac);color:var(--onac);border:0;border-radius:10px;font:inherit;font-weight:700;min-height:46px}
 .tabs{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto}
 .tabs button{flex:none;font:inherit;font-size:14px;color:var(--mu);background:transparent;border:1px solid var(--ln);border-radius:999px;padding:6px 14px;min-height:36px}
@@ -53,7 +56,7 @@ li.ok .days{color:var(--ok)}li.warn .days{color:var(--warn)}li.bad .days{color:v
 <p class="sub" id="sub"></p>
 
 <form id="f">
- <div class="full"><label for="n">食材名</label><input id="n" required placeholder="例:鶏むね肉"></div>
+ <div class="full"><label for="n">食材名</label><input id="n" required placeholder="例:鶏むね肉" autocomplete="off"><div class="sg" id="sg"></div></div>
  <div><label for="q">数量</label><input id="q" type="number" min="1" value="1" inputmode="numeric"></div>
  <div><label for="p">保存場所</label><select id="p"><option>冷蔵</option><option>冷凍</option><option>常温</option></select></div>
  <div class="full"><label for="d" id="dl">期限</label><input id="d" type="date" required></div>
@@ -69,6 +72,15 @@ li.ok .days{color:var(--ok)}li.warn .days{color:var(--warn)}li.bad .days{color:v
 var KEY="foodstock.v1",items=[],filter="すべて";
 try{items=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArray(items))items=[]}catch(e){items=[]}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
+var HK="foodstock.hist.v1",hist={};
+try{hist=JSON.parse(localStorage.getItem(HK)||"{}");if(!hist||typeof hist!=="object"||Array.isArray(hist))hist={}}catch(e){hist={}}
+function saveH(){try{localStorage.setItem(HK,JSON.stringify(hist))}catch(e){}}
+function sugg(){
+ var v=document.getElementById("n").value.trim(),box=document.getElementById("sg");
+ var ks=Object.keys(hist).filter(function(k){return !v||k.indexOf(v)>-1}).sort(function(a,b){return hist[b].c-hist[a].c}).slice(0,6);
+ if(ks.length===1&&ks[0]===v)ks=[];
+ box.innerHTML=ks.map(function(k){return '<button type="button" data-k="'+esc(k)+'">'+esc(k)+'</button>'}).join("");
+}
 function today(){var t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate())}
 function left(d){var p=d.split("-");return Math.round((new Date(+p[0],+p[1]-1,+p[2])-today())/864e5)}
 function cls(n){return n<0?"bad":n<=3?"warn":"ok"}
@@ -94,8 +106,8 @@ function render(){
 document.getElementById("f").addEventListener("submit",function(e){
  e.preventDefault();
  var n=document.getElementById("n").value.trim();if(!n)return;
- var pv=document.getElementById("p").value,dv=document.getElementById("d").value,it={id:Date.now()+Math.random().toString(36).slice(2,6),n:n,q:Math.max(1,+document.getElementById("q").value||1),p:pv,d:dv};if(pv==="冷凍"){it.f=dv;it.d=addDays(dv,FZ)}items.push(it);
- save();document.getElementById("n").value="";document.getElementById("q").value=1;render();
+ var pv=document.getElementById("p").value,dv=document.getElementById("d").value,it={id:Date.now()+Math.random().toString(36).slice(2,6),n:n,q:Math.max(1,+document.getElementById("q").value||1),p:pv,d:dv};if(pv==="冷凍"){it.f=dv;it.d=addDays(dv,FZ)}items.push(it);var h=hist[n]||{c:0};h.c++;h.p=pv;if(pv!=="冷凍")h.o=Math.max(0,left(dv));hist[n]=h;saveH();
+ save();document.getElementById("n").value="";document.getElementById("q").value=1;sugg();render();
 });
 document.getElementById("tabs").addEventListener("click",function(e){var t=e.target.dataset.t;if(t){filter=t;render()}});
 document.getElementById("list").addEventListener("click",function(e){
@@ -110,6 +122,14 @@ var d=today(),dd=new Date(d.getTime()+3*864e5);
 document.getElementById("d").value=dd.getFullYear()+"-"+String(dd.getMonth()+1).padStart(2,"0")+"-"+String(dd.getDate()).padStart(2,"0");
 function setDef(){var fz=document.getElementById("p").value==="冷凍";document.getElementById("dl").textContent=fz?"冷凍した日":"期限";document.getElementById("d").value=addDays(fmt(today()),fz?0:3)}
 document.getElementById("p").addEventListener("change",setDef);
+document.getElementById("n").addEventListener("input",sugg);
+document.getElementById("n").addEventListener("focus",sugg);
+document.getElementById("sg").addEventListener("click",function(e){
+ var k=e.target.dataset.k;if(!k)return;var h=hist[k];
+ document.getElementById("n").value=k;
+ if(h){document.getElementById("p").value=h.p||"冷蔵";setDef();if(h.p!=="冷凍"&&typeof h.o==="number")document.getElementById("d").value=addDays(fmt(today()),h.o)}
+ document.getElementById("sg").innerHTML="";
+});
 render();
 })();
 </script>
