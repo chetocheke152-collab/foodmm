@@ -134,9 +134,9 @@ function label(n){return n<0?Math.abs(n)+"日超過":n===0?"今日まで":"あ�
 function isD(s){return typeof s==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(s)}
 function nz(x,m){x=+x;return isFinite(x)&&x>=0?Math.min(x,m):0}
 function sx(s,n){return String(s==null?'':s).slice(0,n)}
-var PL=['冷蔵','冷凍','常温'];
-function cleanItems(a){return a.filter(function(i){return i&&typeof i==='object'&&typeof i.n==='string'&&i.n&&isD(i.d)&&PL.indexOf(i.p)>-1}).map(function(i){var o={id:sx(i.id,40).replace(/[^\w]/g,'')||'x'+Math.random().toString(36).slice(2,8),n:sx(i.n,40),q:Math.max(1,Math.min(999,Math.round(+i.q)||1)),p:i.p,d:i.d};if(isD(i.f))o.f=i.f;return o})}
-function cleanHist(h){var o={};Object.keys(h).forEach(function(k){var x=h[k];if(k==='__proto__'||!x||typeof x!=='object')return;o[sx(k,40)]={c:nz(x.c,9999),p:PL.indexOf(x.p)>-1?x.p:'冷蔵',o:typeof x.o==='number'?Math.max(0,Math.min(3650,Math.round(x.o))):undefined}});return o}
+function PLf(){return['冷蔵','冷凍','常温']}
+function cleanItems(a){return a.filter(function(i){return i&&typeof i==='object'&&typeof i.n==='string'&&i.n&&isD(i.d)&&PLf().indexOf(i.p)>-1}).map(function(i){var o={id:sx(i.id,40).replace(/[^\w]/g,'')||'x'+Math.random().toString(36).slice(2,8),n:sx(i.n,40),q:Math.max(1,Math.min(999,Math.round(+i.q)||1)),p:i.p,d:i.d};if(isD(i.f))o.f=i.f;return o})}
+function cleanHist(h){var o={};Object.keys(h).forEach(function(k){var x=h[k];if(k==='__proto__'||!x||typeof x!=='object')return;o[sx(k,40)]={c:nz(x.c,9999),p:PLf().indexOf(x.p)>-1?x.p:'冷蔵',o:typeof x.o==='number'?Math.max(0,Math.min(3650,Math.round(x.o))):undefined}});return o}
 function cleanMenu(m){var o={};Object.keys(m).forEach(function(k){if(!isD(k)||!m[k]||typeof m[k]!=='object')return;var d={};['b','l','d'].forEach(function(t){d[t]=(Array.isArray(m[k][t])?m[k][t]:[]).slice(0,100).map(function(x){return x&&typeof x==='object'?{n:sx(x.n,60),k:nz(x.k,20000),p:nz(x.p,2000),f:nz(x.f,2000),c:nz(x.c,5000)}:null}).filter(Boolean)});o[k]=d});return o}
 function cleanCust(c){var o={};Object.keys(c).forEach(function(k){var x=c[k];if(k==='__proto__'||!x||typeof x!=='object')return;o[sx(k,40)]={u:sx(x.u||'1食分',12),k:nz(x.k,20000),p:nz(x.p,2000),f:nz(x.f,2000),c:nz(x.c,5000)}});return o}
 function cleanTgt(t){return{k:nz(t.k,10000)||1800,p:nz(t.p,500)||90}}
