@@ -58,8 +58,8 @@ li.ok .days{color:var(--ok)}li.warn .days{color:var(--warn)}li.bad .days{color:v
 .score{font-size:30px;font-weight:700}.score.ok{color:var(--ok)}.score.warn{color:var(--warn)}.score.bad{color:var(--bad)}
 .stars{font-size:20px;letter-spacing:2px}
 details.card summary{font-weight:600;min-height:24px}
-.lh{display:flex;align-items:center;gap:6px;margin-bottom:3px}.lh label{margin:0}
-.hp{position:relative}
+.lh{display:flex;align-items:center;gap:6px;margin-bottom:3px;min-height:22px}.lh label{margin:0}
+.hp{position:relative;display:flex;align-items:center}
 .hq{width:22px;height:22px;border-radius:50%;border:1px solid var(--ln);background:var(--bg);color:var(--mu);font:inherit;font-size:13px;padding:0}
 .tp{position:absolute;right:-8px;top:28px;z-index:5;width:min(260px,78vw);background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;box-shadow:0 4px 14px rgba(0,0,0,.25)}.tot{font-weight:600;margin:4px 0}.nt{font-size:14px;margin-top:4px}
 </style>
@@ -100,7 +100,7 @@ details.card summary{font-weight:600;min-height:24px}
 <div><label for="tp">目標たんぱく質(g)</label><input id="tp" type="number" inputmode="numeric"></div>
 </div>
 <form id="mf">
-<div><label for="mm">食事</label><select id="mm"><option value="b">朝</option><option value="l">昼</option><option value="d">夕</option></select></div>
+<div><div class="lh"><label for="mm">食事</label></div><select id="mm"><option value="b">朝</option><option value="l">昼</option><option value="d">夕</option></select></div>
 <div><div class="lh"><label for="mq">量(倍数)</label><span class="hp"><button type="button" class="hq" aria-label="量の入れ方" aria-expanded="false">?</button><span class="tp" role="note" hidden>食品を選ぶと、基準の量(1個・100gなど)が「1」になります。下のボタンで選ぶか、数字で直接入れてください(90gなら0.9、半分なら0.5)。栄養の数値は量に合わせて自動で変わります。</span></span></div><input id="mq" type="number" step="any" min="0.1" value="1" inputmode="decimal"><div class="sg" id="qc"></div><div class="meta" id="mqt"></div></div>
 <div class="full"><label for="mn">食べたもの</label><input id="mn" required maxlength="40" autocomplete="off" placeholder="例:サラダチキン"><div class="sg" id="sg2"></div><div class="meta" id="mh"></div></div>
 <div><label for="mk">kcal</label><input id="mk" type="number" step="any" inputmode="decimal"></div>
